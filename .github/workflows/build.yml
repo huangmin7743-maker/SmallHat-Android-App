@@ -21,22 +21,30 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Verify Java
+        run: java -version && echo "JAVA_HOME=$JAVA_HOME"
+
       - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Build APK
-        run: ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx2g
+        run: |
+          export JAVA_HOME=$JAVA_HOME_17_X64
+          echo "Using JAVA_HOME=$JAVA_HOME"
+          ./gradlew assembleDebug --no-daemon --stacktrace -Dorg.gradle.jvmargs="-Xmx2g -Dfile.encoding=UTF-8"
+        shell: bash
 
       - name: Find APK
         run: |
           echo "Searching for built APK..."
-          find . -name "*.apk" -type f 2>/dev/null
+          find . -name "*.apk" -type f
           mkdir -p /tmp/apk-output
-          find . -name "*.apk" -type f 2>/dev/null -exec cp {} /tmp/apk-output/ \;
+          find . -name "*.apk" -type f -exec cp {} /tmp/apk-output/ \;
+          ls -la /tmp/apk-output/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: SmallHat-APK
-          path: /tmp/apk-output/*.apk
+          path: /tmp/apk-output/
           retention-days: 30
