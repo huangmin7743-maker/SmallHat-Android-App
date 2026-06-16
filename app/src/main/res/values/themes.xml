@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.SmallHat" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">#FF0F0F1A</item>
+    <style name="Theme.SmallHat" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#0f0f1a</item>
+        <item name="android:navigationBarColor">#1a1a2e</item>
+        <item name="android:windowBackground">#0f0f1a</item>
+        <item name="colorPrimary">#f7971e</item>
+        <item name="colorPrimaryDark">#0f0f1a</item>
+        <item name="colorAccent">#f7971e</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

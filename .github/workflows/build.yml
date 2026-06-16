@@ -1,0 +1,42 @@
+name: Build SmallHat APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build APK
+        run: ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx2g
+
+      - name: Find APK
+        run: |
+          echo "Searching for built APK..."
+          find . -name "*.apk" -type f 2>/dev/null
+          mkdir -p /tmp/apk-output
+          find . -name "*.apk" -type f 2>/dev/null -exec cp {} /tmp/apk-output/ \;
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmallHat-APK
+          path: /tmp/apk-output/*.apk
+          retention-days: 30
