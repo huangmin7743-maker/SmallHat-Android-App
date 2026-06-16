@@ -37,13 +37,19 @@ public class MainActivity extends AppCompatActivity {
         settings.setDatabaseEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        
+        // ✅ 关键：允许 file:// 跨域请求 API
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        
+        // 桌面端 User-Agent，避免被移动端限制
         settings.setUserAgentString(
-            "Mozilla/5.0 (Linux; Android 14; Xiaomi) " +
+            "Mozilla/5.0 (Linux; Android 14; SM-S928B) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) " +
-            "Chrome/120.0.6099.230 Mobile Safari/537.36 SmallHat/1.0"
+            "Chrome/125.0.6422.165 Mobile Safari/537.36"
         );
         
-        // 允许第三方Cookie（Telegram Web 需要）
+        // 允许第三方 Cookie
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         
         // 硬件加速
@@ -52,12 +58,8 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // Telegram Web 链接在 WebView 内打开
-                if (url.startsWith("http://") || url.startsWith("https://")) {
-                    view.loadUrl(url);
-                    return true;
-                }
-                return false;
+                view.loadUrl(url);
+                return true;
             }
         });
         
