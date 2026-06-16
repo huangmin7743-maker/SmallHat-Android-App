@@ -21,24 +21,16 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Debug
+      - name: Accept Android SDK licenses
         run: |
-          echo "JAVA_HOME=$JAVA_HOME"
-          echo "JAVA_HOME_17_X64=$JAVA_HOME_17_X64"
-          which java
-          java -version 2>&1
-          ls -la gradlew
-          head -5 gradlew
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
+          yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses 2>/dev/null || true
+          yes | $ANDROID_HOME/cmdline-tools/*/bin/sdkmanager --licenses 2>/dev/null || true
 
       - name: Build APK
         run: |
           chmod +x gradlew
-          # Try different JAVA_HOME possibilities
-          export JAVA_HOME=${JAVA_HOME:-$JAVA_HOME_17_X64}
-          $JAVA_HOME/bin/java -version 2>&1 || echo "No java in JAVA_HOME"
-          ./gradlew assembleDebug --no-daemon 2>&1
-          echo "BUILD_STATUS=$?"
-        shell: bash
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Find APK
         if: always()
