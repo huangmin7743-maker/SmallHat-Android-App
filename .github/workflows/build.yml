@@ -21,26 +21,31 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Verify Java
-        run: java -version && echo "JAVA_HOME=$JAVA_HOME"
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+      - name: Debug
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "JAVA_HOME_17_X64=$JAVA_HOME_17_X64"
+          which java
+          java -version 2>&1
+          ls -la gradlew
+          head -5 gradlew
 
       - name: Build APK
         run: |
-          export JAVA_HOME=$JAVA_HOME_17_X64
-          echo "Using JAVA_HOME=$JAVA_HOME"
-          ./gradlew assembleDebug --no-daemon --stacktrace -Dorg.gradle.jvmargs="-Xmx2g -Dfile.encoding=UTF-8"
+          chmod +x gradlew
+          # Try different JAVA_HOME possibilities
+          export JAVA_HOME=${JAVA_HOME:-$JAVA_HOME_17_X64}
+          $JAVA_HOME/bin/java -version 2>&1 || echo "No java in JAVA_HOME"
+          ./gradlew assembleDebug --no-daemon 2>&1
+          echo "BUILD_STATUS=$?"
         shell: bash
 
       - name: Find APK
+        if: always()
         run: |
-          echo "Searching for built APK..."
-          find . -name "*.apk" -type f
+          find . -path "*/build/outputs/*" -type f
           mkdir -p /tmp/apk-output
           find . -name "*.apk" -type f -exec cp {} /tmp/apk-output/ \;
-          ls -la /tmp/apk-output/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
