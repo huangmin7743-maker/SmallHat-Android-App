@@ -1,436 +1,185 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta name="theme-color" content="#1a1a2e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.png">
-<title>SmallHat ✦ 搞钱工具箱</title>
+<title>SmallHat</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#0f0f1a; color:#e0e0e0; height:100vh; display:flex; flex-direction:column; overflow:hidden; user-select:none; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,sans-serif;background:#0f0f1a;color:#e0e0e0;overflow:hidden;height:100vh}
 
-/* ====== 启动页 ====== */
-.splash {
-    position:fixed; inset:0; background:#0f0f1a; z-index:9999;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    transition:opacity .5s; pointer-events:none;
+/* 工具栏 - 底部浮动 */
+.toolbar {
+  position:fixed;bottom:0;left:0;right:0;
+  display:flex;background:#1a1a2e;border-top:1px solid #2a2a4a;
+  padding:4px 0;padding-bottom:env(safe-area-inset-bottom,4px);
+  z-index:9999;
 }
-.splash.hide { opacity:0; }
-.splash .logo { font-size:64px; animation:pulse 1.5s infinite; }
-.splash h1 { background:linear-gradient(45deg,#f7971e,#ffd200); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:28px; margin-top:16px; }
-.splash p { color:#555; font-size:14px; margin-top:8px; }
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-
-/* ====== 主布局 ====== */
-.app { display:flex; flex-direction:column; height:100vh; }
-
-/* 顶部导航 */
-.topbar {
-    background:linear-gradient(135deg,#1a1a2e,#16213e);
-    padding:12px 16px; display:flex; align-items:center; gap:12px;
-    border-bottom:1px solid #2a2a4a; flex-shrink:0;
-    min-height:56px; padding-top:env(safe-area-inset-top,12px);
+.toolbar .tab {
+  flex:1;text-align:center;padding:6px 4px;cursor:pointer;
+  color:#555;font-size:10px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  transition:color .2s;
+  border:none;background:none;
 }
-.topbar .avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(45deg,#f7971e,#ffd200); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px; color:#000; flex-shrink:0; }
-.topbar .title { flex:1; }
-.topbar .title h2 { font-size:16px; color:#e0e0e0; }
-.topbar .title span { font-size:11px; color:#888; }
-.topbar .actions { display:flex; gap:8px; }
-.topbar .actions button { background:none; border:none; color:#888; font-size:20px; padding:4px 8px; cursor:pointer; border-radius:8px; }
-.topbar .actions button:hover { background:#2a2a4a; }
+.toolbar .tab .icon{font-size:20px}
+.toolbar .tab.active{color:#f7971e}
+.toolbar .tab .badge{background:#ff4444;color:#fff;font-size:9px;border-radius:8px;padding:1px 5px;position:absolute;top:0;right:50%;margin-right:-20px}
 
-/* 底部导航 */
-.bottombar {
-    display:flex; background:#1a1a2e; border-top:1px solid #2a2a4a;
-    flex-shrink:0; padding-bottom:env(safe-area-inset-bottom,0);
+/* Telegram Web 容器 */
+#telegramFrame {
+  width:100%;height:100%;border:none;
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  margin-bottom:60px;z-index:1;
 }
-.bottombar .tab {
-    flex:1; text-align:center; padding:8px 4px; cursor:pointer;
-    color:#555; font-size:10px; transition:all .2s;
-    display:flex; flex-direction:column; align-items:center; gap:2px;
+
+/* 工具箱页面 */
+#toolsPage {
+  position:fixed;top:0;left:0;right:0;bottom:60px;
+  z-index:2;display:none;overflow-y:auto;
+  background:#0f0f1a;padding:20px 16px;
 }
-.bottombar .tab .icon { font-size:22px; }
-.bottombar .tab.active { color:#f7971e; }
-.bottombar .tab.active .icon { transform:scale(1.1); }
-.bottombar .tab .badge { background:#ff4444; color:#fff; font-size:10px; border-radius:10px; padding:1px 6px; position:relative; top:-4px; }
+#toolsPage.show{display:block}
 
-/* 页面容器 */
-.pages { flex:1; overflow:hidden; position:relative; }
-.page { position:absolute; inset:0; overflow-y:auto; padding:12px; display:none; scroll-behavior:smooth; }
-.page.active { display:block; }
-
-/* ====== 聊天列表 ====== */
-.chat-list { list-style:none; }
-.chat-item {
-    display:flex; align-items:center; gap:12px; padding:12px; 
-    border-bottom:1px solid #1a1a2e; cursor:pointer; border-radius:12px; transition:background .2s;
+.tools-header{font-size:24px;font-weight:bold;margin-bottom:4px;background:linear-gradient(45deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tools-sub{color:#555;font-size:13px;margin-bottom:20px}
+.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tool-card{
+  background:#1a1a2e;border:1px solid #2a2a4a;border-radius:16px;
+  padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s
 }
-.chat-item:hover { background:#1a1a2e; }
-.chat-item .chat-avatar { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
-.chat-item .chat-info { flex:1; min-width:0; }
-.chat-item .chat-info h3 { font-size:15px; color:#e0e0e0; margin-bottom:4px; }
-.chat-item .chat-info p { font-size:12px; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.chat-item .chat-meta { text-align:right; flex-shrink:0; }
-.chat-item .chat-meta .time { font-size:11px; color:#555; }
-.chat-item .chat-meta .unread { background:#f7971e; color:#000; font-size:11px; border-radius:10px; padding:1px 6px; font-weight:bold; display:inline-block; margin-top:4px; }
+.tool-card:active{transform:scale(0.95)}
+.tool-card .icon{font-size:28px;margin-bottom:8px}
+.tool-card h3{font-size:14px;color:#e0e0e0;margin-bottom:4px}
+.tool-card p{font-size:11px;color:#666}
 
-/* ====== 聊天界面 ====== */
-.chat-view { display:none; flex-direction:column; height:100%; }
-.chat-view.active { display:flex; }
-.chat-messages { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; }
-.msg { max-width:80%; padding:10px 14px; border-radius:16px; font-size:14px; line-height:1.5; word-wrap:break-word; }
-.msg.in { align-self:flex-start; background:#1a1a2e; border-bottom-left-radius:4px; color:#e0e0e0; }
-.msg.out { align-self:flex-end; background:linear-gradient(135deg,#f7971e,#e08800); border-bottom-right-radius:4px; color:#000; }
-.msg .time { font-size:10px; color:inherit; opacity:0.5; margin-top:4px; display:block; }
-.chat-input { display:flex; gap:8px; padding:8px 12px; background:#1a1a2e; border-top:1px solid #2a2a4a; flex-shrink:0; }
-.chat-input input { flex:1; padding:10px 16px; border-radius:24px; border:1px solid #3a3a5a; background:#16213e; color:#fff; font-size:14px; outline:none; }
-.chat-input input:focus { border-color:#f7971e; }
-.chat-input button { width:40px; height:40px; border-radius:50%; border:none; background:#f7971e; color:#000; font-size:18px; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-
-/* ====== 工具页面 ====== */
-.tools-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
-.tool-card {
-    background:#1a1a2e; border:1px solid #2a2a4a; border-radius:16px; padding:20px 16px;
-    text-align:center; cursor:pointer; transition:all .2s;
+/* 个人中心 */
+#profilePage {
+  position:fixed;top:0;left:0;right:0;bottom:60px;
+  z-index:2;display:none;overflow-y:auto;
+  background:#0f0f1a;padding:20px 16px;
 }
-.tool-card:hover { border-color:#f7971e; transform:translateY(-2px); }
-.tool-card .icon { font-size:36px; margin-bottom:8px; }
-.tool-card h3 { font-size:14px; color:#e0e0e0; margin-bottom:4px; }
-.tool-card p { font-size:11px; color:#666; }
+#profilePage.show{display:block}
 
-/* ====== 个人中心 ====== */
-.profile-header { text-align:center; padding:30px 0; }
-.profile-header .big-avatar { width:72px; height:72px; border-radius:50%; background:linear-gradient(45deg,#f7971e,#ffd200); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#000; margin:0 auto 12px; }
-.profile-header h2 { font-size:20px; color:#e0e0e0; }
-.profile-header p { color:#666; font-size:13px; margin-top:4px; }
-.profile-menu { list-style:none; background:#1a1a2e; border-radius:16px; overflow:hidden; }
-.profile-menu li { display:flex; align-items:center; gap:12px; padding:16px; border-bottom:1px solid #2a2a4a; cursor:pointer; }
-.profile-menu li:last-child { border:none; }
-.profile-menu li .mi { font-size:20px; width:24px; text-align:center; }
-.profile-menu li span { flex:1; font-size:14px; }
-.profile-menu li .arrow { color:#555; }
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(45deg,#f7971e,#ffd200);display:flex;align-items:center;justify-content:center;font-size:36px;color:#000;margin:20px auto 12px}
+.profile-name{font-size:20px;font-weight:bold;text-align:center}
+.profile-id{font-size:13px;color:#555;text-align:center;margin-bottom:24px}
+.profile-menu{list-style:none}
+.profile-menu li{display:flex;align-items:center;padding:14px 12px;border-bottom:1px solid #1a1a2e;cursor:pointer;font-size:14px;gap:12px}
+.profile-menu li:active{background:#1a1a2e;border-radius:12px}
+.profile-menu li .mi{font-size:18px}
+.profile-menu li .arrow{margin-left:auto;color:#333;font-size:18px}
 
-/* ====== 通知弹窗 ====== */
-.toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a4a; color:#e0e0e0; padding:12px 24px; border-radius:12px; font-size:13px; z-index:999; transition:all .3s; opacity:0; pointer-events:none; }
-.toast.show { opacity:1; }
-
-/* 下拉刷新 */
-.pull-loader { text-align:center; padding:16px; color:#555; font-size:12px; display:none; }
-
-/* 暗色滚动条 */
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:#2a2a4a; border-radius:4px; }
+/* Toast */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #f7971e;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;z-index:99999;display:none;white-space:nowrap}
+#toast.show{display:block;animation:fadeInOut 2s}
+@keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(10px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1}100%{opacity:0}}
 </style>
 </head>
 <body>
 
-<!-- 启动页 -->
-<div class="splash" id="splash">
-    <div class="logo">✦</div>
-    <h1>SmallHat</h1>
-    <p>搞钱工具箱 · 连接一切</p>
+<!-- Telegram Web -->
+<iframe id="telegramFrame" src="about:blank"></iframe>
+
+<!-- 底部工具栏 -->
+<div class="toolbar" id="toolbar">
+  <button class="tab active" onclick="switchTab('telegram')">
+    <span class="icon">💬</span>消息
+  </button>
+  <button class="tab" onclick="switchTab('tools')">
+    <span class="icon">🧰</span>工具
+  </button>
+  <button class="tab" onclick="switchTab('profile')">
+    <span class="icon">👤</span>我的
+  </button>
 </div>
 
-<!-- 主界面 -->
-<div class="app" id="app" style="display:none;">
-
-    <!-- 顶栏 -->
-    <div class="topbar" id="topbar">
-        <div class="avatar" id="topAvatar">✦</div>
-        <div class="title">
-            <h2 id="topTitle">SmallHat</h2>
-            <span id="topSub">在线 128 人</span>
-        </div>
-        <div class="actions">
-            <button onclick="showToast('搜索功能开发中')">🔍</button>
-            <button onclick="showToast('更多功能开发中')">⋮</button>
-        </div>
-    </div>
-
-    <!-- 页面 -->
-    <div class="pages">
-        <!-- 聊天列表页 -->
-        <div class="page active" id="pageChats">
-            <div class="pull-loader" id="pullLoader">下拉刷新...</div>
-            <ul class="chat-list" id="chatList"></ul>
-        </div>
-
-        <!-- 聊天窗口 -->
-        <div class="chat-view" id="chatView">
-            <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:#1a1a2e;border-bottom:1px solid #2a2a4a;flex-shrink:0;">
-                <button onclick="closeChat()" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer;">←</button>
-                <div style="flex:1;"><h3 id="chatUserName" style="font-size:15px;">用户</h3></div>
-            </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="chat-input">
-                <input id="msgInput" placeholder="输入消息..." onkeydown="if(event.key==='Enter')sendMsg()">
-                <button onclick="sendMsg()">➤</button>
-            </div>
-        </div>
-
-        <!-- 工具页 -->
-        <div class="page" id="pageTools">
-            <div class="tools-grid" id="toolsGrid"></div>
-        </div>
-
-        <!-- 个人中心 -->
-        <div class="page" id="pageProfile">
-            <div class="profile-header">
-                <div class="big-avatar">✦</div>
-                <h2 id="profileName">SmallHat用户</h2>
-                <p id="profileBio">搞钱人，搞钱魂 ⛏️</p>
-            </div>
-            <ul class="profile-menu" id="profileMenu"></ul>
-        </div>
-    </div>
-
-    <!-- 底栏 -->
-    <div class="bottombar" id="bottombar">
-        <div class="tab active" data-tab="chats" onclick="switchTab('chats')">
-            <span class="icon">💬</span> 消息
-            <span class="badge" id="chatBadge" style="display:none;">3</span>
-        </div>
-        <div class="tab" data-tab="tools" onclick="switchTab('tools')">
-            <span class="icon">🧰</span> 工具
-        </div>
-        <div class="tab" data-tab="profile" onclick="switchTab('profile')">
-            <span class="icon">👤</span> 我的
-        </div>
-    </div>
+<!-- 工具箱 -->
+<div id="toolsPage">
+  <div class="tools-header">🧰 搞钱工具箱</div>
+  <div class="tools-sub">连接一切 · 自动赚钱</div>
+  <div class="tools-grid">
+    <div class="tool-card" onclick="toolAction('bot')"><div class="icon">💰</div><h3>黄金信号</h3><p>XAUUSD 实时推送</p></div>
+    <div class="tool-card" onclick="toolAction('orderflow')"><div class="icon">📊</div><h3>订单流</h3><p>BTC/ETH 买卖压力</p></div>
+    <div class="tool-card" onclick="toolAction('ai')"><div class="icon">🤖</div><h3>AI 中转</h3><p>GPT-4o / Llama API</p></div>
+    <div class="tool-card" onclick="toolAction('game')"><div class="icon">🎮</div><h3>GameStation</h3><p>50款游戏</p></div>
+    <div class="tool-card" onclick="toolAction('astock')"><div class="icon">📈</div><h3>A股量化</h3><p>AI选股策略</p></div>
+    <div class="tool-card" onclick="toolAction('arb')"><div class="icon">🪙</div><h3>搬砖监控</h3><p>跨所价差套利</p></div>
+  </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+<!-- 个人中心 -->
+<div id="profilePage">
+  <div class="profile-avatar">H</div>
+  <div class="profile-name">huangmin7743</div>
+  <div class="profile-id">@huangmin7743</div>
+  <ul class="profile-menu">
+    <li><span class="mi">🔑</span> API Key<span class="arrow">›</span></li>
+    <li><span class="mi">💰</span> 余额 <span style="color:#555;margin-left:auto;font-size:12px">¥0.00</span></li>
+    <li><span class="mi">📊</span> 今日数据 <span style="color:#555;margin-left:auto;font-size:12px">0 请求</span></li>
+    <li><span class="mi">🔔</span> 通知设置 <span style="color:#555;margin-left:auto;font-size:12px">已开启</span></li>
+    <li><span class="mi">🌙</span> 夜间模式 <span style="color:#555;margin-left:auto;font-size:12px">默认</span></li>
+    <li><span class="mi">📦</span> 项目备份 <span style="color:#555;margin-left:auto;font-size:12px">MyProjects/</span></li>
+    <li><span class="mi">⚙️</span> 设置</li>
+  </ul>
+</div>
+
+<div id="toast"></div>
 
 <script>
-// ====== 数据 ======
-const CHATS = [
-    {id:1,name:"黄金信号助手",avatar:"💰",lastMsg:"BTC 现价 65774.5",time:"刚刚",unread:3,online:true,
-     messages:[
-        {type:"in",text:"📊 订单流分析报告\nBTC 买方主导，买盘58%",time:"15:00"},
-        {type:"in",text:"📈 黄金技术分析：XAUUSD RSI 62，偏多",time:"14:30"},
-        {type:"in",text:"🚀 AI信号：BTC 多单建议，目标 68500",time:"14:00"},
-     ]},
-    {id:2,name:"GameStation",avatar:"🎮",lastMsg:"50款游戏在线玩",time:"12:30",unread:0,
-     messages:[
-        {type:"in",text:"🎮 欢迎来到 GameStation！50款游戏已就绪",time:"12:30"},
-        {type:"in",text:"🔥 热门：Snake、Tetris、Subway Surfers、Agar.io",time:"12:30"},
-     ]},
-    {id:3,name:"AI 中转站",avatar:"🤖",lastMsg:"Groq 免费模型已接入",time:"11:00",unread:0,
-     messages:[
-        {type:"in",text:"🤖 AI 中转站已上线",time:"11:00"},
-        {type:"in",text:"💰 你的API Key: addd9db72409f146cad890e6dc16xxxx",time:"11:00"},
-        {type:"in",text:"🆕 Groq 免费模型：Llama 3.1 70B / 8B，零成本！",time:"11:00"},
-     ]},
-    {id:4,name:"SmallHat AI 助手",avatar:"✦",lastMsg:"有什么可以帮你？",time:"昨天",unread:0,
-     messages:[
-        {type:"in",text:"✨ 你好！我是SmallHatAI助手，有什么可以帮你？",time:"昨天"},
-     ]},
-    {id:5,name:"订单流监控",avatar:"📊",lastMsg:"BTC 大单监控中",time:"昨天",unread:0,
-     messages:[
-        {type:"in",text:"📊 订单流监控已启动",time:"昨天"},
-        {type:"in",text:"🟢 BTC 买盘堆积，bid/ask 比 2.3x",time:"昨天"},
-     ]},
-];
-
-const TOOLS = [
-    {icon:"💰",name:"黄金信号",desc:"XAUUSD 实时分析推送",action:"openBot"},
-    {icon:"📊",name:"订单流",desc:"BTC/ETH 买卖压力分析",action:"orderflow"},
-    {icon:"🎮",name:"GameStation",desc:"50款游戏在线玩",action:"openGame"},
-    {icon:"🤖",name:"AI 中转",desc:"GPT-4o / Llama 3.1 API",action:"openRelay"},
-    {icon:"📈",name:"A股量化",desc:"AI选股策略",action:"astock"},
-    {icon:"🪙",name:"搬砖监控",desc:"跨所价差套利",action:"arbitrage"},
-];
-
-const PROFILE_MENU = [
-    {icon:"🔑",name:"我的API Key",desc:"AI中转站密钥"},
-    {icon:"💰",name:"余额",desc:"¥0.00"},
-    {icon:"📊",name:"今日数据",desc:"请求 0 次"},
-    {icon:"🔔",name:"通知设置",desc:"已开启"},
-    {icon:"🌙",name:"夜间模式",desc:"跟随系统"},
-    {icon:"📦",name:"所有项目备份",desc:"手机存储 MyProjects/"},
-];
-
-// ====== 渲染 ======
-function renderChats() {
-    const list = document.getElementById("chatList");
-    list.innerHTML = CHATS.map(c => `
-        <li class="chat-item" onclick="openChat(${c.id})">
-            <div class="chat-avatar" style="background:linear-gradient(135deg,#2a2a4a,#1a1a2e)">${c.avatar}</div>
-            <div class="chat-info">
-                <h3>${c.name}</h3>
-                <p>${c.lastMsg}</p>
-            </div>
-            <div class="chat-meta">
-                <div class="time">${c.time}</div>
-                ${c.unread ? `<div class="unread">${c.unread}</div>` : ''}
-            </div>
-        </li>
-    `).join("");
-}
-
-function renderTools() {
-    const grid = document.getElementById("toolsGrid");
-    grid.innerHTML = TOOLS.map(t => `
-        <div class="tool-card" onclick="toolAction('${t.action}')">
-            <div class="icon">${t.icon}</div>
-            <h3>${t.name}</h3>
-            <p>${t.desc}</p>
-        </div>
-    `).join("");
-}
-
-function renderProfile() {
-    const menu = document.getElementById("profileMenu");
-    menu.innerHTML = PROFILE_MENU.map(m => `
-        <li onclick="showToast('${m.name}: ${m.desc}')">
-            <span class="mi">${m.icon}</span>
-            <span>${m.name}</span>
-            <span style="color:#555;font-size:12px;">${m.desc}</span>
-            <span class="arrow">›</span>
-        </li>
-    `).join("");
-}
-
-// ====== Tab切换 ======
-function switchTab(tab) {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelector(`.tab[data-tab="${tab}"]`).classList.add("active");
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(`page${tab.charAt(0).toUpperCase()+tab.slice(1)}`).classList.add("active");
-    
-    const titles = {chats:"SmallHat",tools:"搞钱工具箱",profile:"个人中心"};
-    document.getElementById("topTitle").textContent = titles[tab];
-}
-
-// ====== 聊天 ======
-let currentChat = null;
-
-function openChat(id) {
-    const chat = CHATS.find(c => c.id === id);
-    if (!chat) return;
-    currentChat = chat;
-    chat.unread = 0;
-    document.getElementById("chatUserName").textContent = chat.name;
-    
-    const view = document.getElementById("chatView");
-    view.classList.add("active");
-    
-    const msgs = document.getElementById("chatMessages");
-    msgs.innerHTML = chat.messages.map(m => 
-        `<div class="msg ${m.type}">${m.text.replace(/\n/g,'<br>')}<span class="time">${m.time}</span></div>`
-    ).join("");
-    msgs.scrollTop = msgs.scrollHeight;
-    
-    renderChats();
-    checkBadge();
-}
-
-function closeChat() {
-    document.getElementById("chatView").classList.remove("active");
-}
-
-function sendMsg() {
-    const input = document.getElementById("msgInput");
-    const text = input.value.trim();
-    if (!text || !currentChat) return;
-    
-    const msgs = document.getElementById("chatMessages");
-    const time = new Date().toLocaleTimeString("zh-CN", {hour:"2-digit",minute:"2-digit"});
-    msgs.innerHTML += `<div class="msg out">${text}<span class="time">${time}</span></div>`;
-    msgs.scrollTop = msgs.scrollHeight;
-    input.value = "";
-    
-    // 自动回复
-    setTimeout(() => {
-        const replies = [
-            "收到！正在处理 ✅",
-            "好的，已收到你的消息",
-            "明白，我来查一下 🔍",
-            "感谢反馈！",
-            "已记录，稍后处理 ⏰"
-        ];
-        msgs.innerHTML += `<div class="msg in">${replies[Math.floor(Math.random()*replies.length)]}<span class="time">${new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"})}</span></div>`;
-        msgs.scrollTop = msgs.scrollHeight;
-    }, 1000 + Math.random() * 1000);
-}
-
-// ====== 工具操作 ======
-function toolAction(action) {
-    switch(action) {
-        case "openBot":
-            window.open("https://t.me/mydfjjgold_bot","_blank");
-            break;
-        case "orderflow":
-            showToast("📊 订单流分析结果已发到群里");
-            break;
-        case "openGame":
-            window.open("https://t.me/mydfjjgold_bot","_blank");
-            break;
-        case "openRelay":
-            window.open("https://t.me/mydfjjgold_bot","_blank");
-            break;
-        default:
-            showToast("功能开发中...");
-    }
-}
-
-// ====== 未读徽章 ======
-function checkBadge() {
-    const total = CHATS.reduce((sum,c) => sum + c.unread, 0);
-    const badge = document.getElementById("chatBadge");
-    badge.style.display = total > 0 ? "inline" : "none";
-    badge.textContent = total > 99 ? "99+" : total;
-}
-
-// ====== Toast ======
-let toastTimer;
-function showToast(msg) {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 2000);
-}
-
-// ====== 在线人数模拟 ======
-let onlineCount = 128;
-setInterval(() => {
-    onlineCount += Math.floor(Math.random() * 7) - 3;
-    if (onlineCount < 50) onlineCount = 50;
-    document.getElementById("topSub").textContent = `在线 ${onlineCount} 人`;
-}, 5000);
-
-// ====== 启动 ======
+// 启动后加载 Telegram Web
 setTimeout(() => {
-    document.getElementById("splash").classList.add("hide");
-    document.getElementById("app").style.display = "flex";
-}, 1500);
+  document.getElementById('telegramFrame').src = 'https://web.telegram.org/k/';
+}, 500);
 
-renderChats();
-renderTools();
-renderProfile();
-checkBadge();
+// Tab 切换
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[onclick*="${tab}"]`).classList.add('active');
+  
+  document.getElementById('toolsPage').classList.remove('show');
+  document.getElementById('profilePage').classList.remove('show');
+  document.getElementById('telegramFrame').style.display = 'none';
+  
+  if (tab === 'telegram') {
+    document.getElementById('telegramFrame').style.display = 'block';
+  } else if (tab === 'tools') {
+    document.getElementById('toolsPage').classList.add('show');
+  } else if (tab === 'profile') {
+    document.getElementById('profilePage').classList.add('show');
+  }
+}
 
-// 下拉刷新模拟
-let startY = 0;
-document.getElementById("pageChats").addEventListener("touchstart", e => startY = e.touches[0].clientY);
-document.getElementById("pageChats").addEventListener("touchend", e => {
-    const diff = e.changedTouches[0].clientY - startY;
-    if (diff > 150) {
-        const loader = document.getElementById("pullLoader");
-        loader.style.display = "block";
-        loader.textContent = "🔄 刷新中...";
-        setTimeout(() => {
-            loader.textContent = "✅ 已更新";
-            setTimeout(() => loader.style.display = "none", 800);
-        }, 1000);
-    }
+// 工具操作
+function toolAction(action) {
+  const urls = {
+    bot: 'https://t.me/mydfjjgold_bot',
+    orderflow: null,
+    ai: 'https://t.me/mydfjjgold_bot',
+    game: 'https://t.me/mydfjjgold_bot',
+    astock: null,
+    arb: null
+  };
+  
+  if (urls[action]) {
+    document.getElementById('telegramFrame').src = urls[action];
+    switchTab('telegram');
+    showToast('🔗 已跳转到 Telegram');
+  } else {
+    showToast('⚡ 功能开发中...');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// 防止 Telegram Web 劫持返回键
+window.addEventListener('hashchange', (e) => {
+  e.preventDefault();
 });
 </script>
 </body>
