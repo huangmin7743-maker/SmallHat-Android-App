@@ -4,429 +4,331 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a14">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>SmallHat</title>
+<title>SmallHat AI</title>
 <style>
-:root {
-  --bg: #0a0a14;
-  --card: #12121e;
-  --card2: #1a1a2e;
-  --border: #1e1e36;
-  --text: #f0f0f0;
-  --text2: #8888aa;
-  --text3: #555577;
-  --accent: #f7971e;
-  --accent2: #ff6b35;
-  --green: #4ade80;
-  --red: #ef4444;
-  --blue: #3b82f6;
-  --purple: #a855f7;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --tab-height: 64px;
-}
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Helvetica Neue',sans-serif;background:#0a0a14;color:#f0f0f0;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
+:root{--bg:#0a0a14;--card:#12121e;--card2:#1a1a2e;--border:#1e1e36;--text:#f0f0f0;--t2:#8888aa;--t3:#555577;--accent:#f7971e;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);--tab-h:64px}
 
-/* ===== SPLASH ===== */
-.splash {
-  position: fixed; inset: 0; background: var(--bg); z-index: 99999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1);
-}
-.splash.hide { opacity: 0; pointer-events: none; }
-.splash-logo { width: 96px; height: 96px; border-radius: 24px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 8px 40px rgba(247,151,30,0.3); animation: splashPulse 2s ease-in-out infinite; }
-@keyframes splashPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.splash h1 { margin-top: 20px; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
-.splash p { color: var(--text3); font-size: 14px; margin-top: 6px; }
+/* SPLASH */
+.splash{position:fixed;inset:0;background:var(--bg);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
+.splash.hide{opacity:0;pointer-events:none}
+.splash-logo{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,#f7971e,#ff6b35);display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 8px 40px rgba(247,151,30,0.3);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.splash h1{margin-top:20px;font-size:28px;font-weight:700}
+.splash p{color:var(--t3);font-size:14px;margin-top:6px}
 
-/* ===== APP SHELL ===== */
-.app-shell { display: none; flex-direction: column; height: 100vh; }
+/* APP */
+.app{display:none;flex-direction:column;height:100vh}
 
-/* ===== HEADER ===== */
-.header {
-  padding-top: var(--safe-top); background: var(--bg);
-  padding-left: 16px; padding-right: 16px; padding-bottom: 10px;
-  flex-shrink: 0;
-}
-.header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; margin-top: 4px; }
-.header-avatar { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; color: #000; flex-shrink: 0; }
-.header-info { flex: 1; }
-.header-info h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
-.header-info span { font-size: 12px; color: var(--text3); }
-.header-actions { display: flex; gap: 4px; }
-.header-actions button { width: 38px; height: 38px; border: none; background: var(--card); border-radius: 12px; color: var(--text2); font-size: 18px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-.header-actions button:active { background: var(--card2); transform: scale(0.92); }
-.search-bar { display: flex; align-items: center; gap: 8px; background: var(--card); border-radius: 12px; padding: 0 14px; height: 40px; border: 1px solid var(--border); }
-.search-bar .icon { color: var(--text3); font-size: 16px; }
-.search-bar input { flex: 1; background: none; border: none; color: var(--text); font-size: 14px; outline: none; }
-.search-bar input::placeholder { color: var(--text3); }
+/* HEADER */
+.header{padding-top:var(--safe-t);padding:8px 16px;padding-top:calc(var(--safe-t) + 8px);display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.header .ha{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff6b35);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#000;flex-shrink:0}
+.header .hi{flex:1}
+.header .hi h1{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.header .hi span{font-size:11px;color:var(--t3)}
+.header .hb{display:flex;gap:4px}
+.header .hb button{width:36px;height:36px;border:none;background:var(--card);border-radius:10px;color:var(--t2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.header .hb button:active{background:var(--card2)}
 
-/* ===== PAGES ===== */
-.pages { flex: 1; overflow: hidden; position: relative; }
-.page { position: absolute; inset: 0; overflow-y: auto; display: none; -webkit-overflow-scrolling: touch; }
-.page.active { display: block; }
-.page-content { padding: 4px 16px 16px; }
+/* PAGES */
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+.page.active{display:block}
 
-/* ===== HOME PAGE ===== */
-.banner { height: 160px; border-radius: 16px; background: linear-gradient(135deg, #1a1a3e, #2a1a1e); margin-bottom: 20px; overflow: hidden; position: relative; padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; }
-.banner h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.banner p { font-size: 13px; color: var(--text2); }
-.banner .tag { display: inline-block; background: var(--accent); color: #000; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; margin-bottom: 8px; width: fit-content; }
-.section-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.section-title h3 { font-size: 17px; font-weight: 600; }
-.section-title a { color: var(--text3); font-size: 13px; text-decoration: none; }
-.featured-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-.featured-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 4px; background: var(--card); border-radius: 14px; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); }
-.featured-item:active { transform: scale(0.94); border-color: var(--accent); }
-.featured-item .icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-.featured-item span { font-size: 11px; color: var(--text2); text-align: center; }
-.tool-list { display: flex; flex-direction: column; gap: 10px; }
-.tool-row { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--card); border-radius: 14px; border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
-.tool-row:active { transform: scale(0.97); border-color: var(--accent); }
-.tool-row .icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-.tool-row .info { flex: 1; }
-.tool-row .info h4 { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
-.tool-row .info p { font-size: 12px; color: var(--text3); }
-.tool-row .arrow { color: var(--text3); font-size: 18px; }
+/* ===== AI CHAT ===== */
+.ai-chat{display:flex;flex-direction:column;height:100%}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.ai-welcome{text-align:center;padding:30px 20px}
+.ai-welcome .icon{font-size:48px;margin-bottom:12px}
+.ai-welcome h2{font-size:20px;font-weight:700;margin-bottom:6px;background:linear-gradient(135deg,#f7971e,#ff6b35);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ai-welcome p{font-size:13px;color:var(--t3);line-height:1.6}
+.ai-welcome .tips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.ai-welcome .tips span{padding:6px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border);font-size:12px;color:var(--t2);cursor:pointer}
+.ai-welcome .tips span:active{background:var(--card2)}
+.msg{max-width:88%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.6;word-wrap:break-word;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,#f7971e,#e08800);border-bottom-right-radius:4px;color:#000}
+.msg.ai{align-self:flex-start;background:var(--card);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text)}
+.msg .mt{font-size:10px;opacity:.4;margin-top:6px;display:block;text-align:right}
+.msg .loading{display:inline-flex;gap:4px;padding:4px 0}
+.msg .loading span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce 1.4s infinite}
+.msg .loading span:nth-child(2){animation-delay:.2s}
+.msg .loading span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}
+.ai-input{display:flex;gap:8px;padding:8px 12px;padding-bottom:calc(var(--safe-b) + 8px);background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
+.ai-input input{flex:1;padding:12px 18px;border-radius:24px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;outline:none}
+.ai-input input:focus{border-color:var(--accent)}
+.ai-input button{width:44px;height:44px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),#ff6b35);color:#000;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-input button:active{transform:scale(.92)}
 
-/* ===== CHAT PAGE ===== */
-.quick-actions { display: flex; gap: 10px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
-.qa-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 16px; background: var(--card); border-radius: 14px; border: 1px solid var(--border); cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.15s; }
-.qa-item:active { transform: scale(0.95); }
-.qa-item .icon { font-size: 20px; }
-.qa-item span { font-size: 11px; color: var(--text2); }
-.chat-list { list-style: none; }
-.chat-item { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--card); cursor: pointer; transition: background 0.15s; }
-.chat-item:active { background: var(--card); margin: 0 -16px; padding: 14px 16px; border-radius: 14px; }
-.chat-item .ca { width: 50px; height: 50px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; position: relative; }
-.chat-item .ca .dot { position: absolute; bottom: -1px; right: -1px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--bg); }
-.chat-item .ca .dot.on { background: var(--green); }
-.chat-item .ca .dot.off { background: #333; }
-.chat-item .ci { flex: 1; min-width: 0; }
-.chat-item .ci h3 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-.chat-item .ci p { font-size: 13px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.chat-item .cm { text-align: right; flex-shrink: 0; }
-.chat-item .cm .t { font-size: 11px; color: var(--text3); }
-.chat-item .cm .u { background: var(--accent); color: #000; font-size: 11px; border-radius: 8px; padding: 1px 7px; font-weight: 700; display: inline-block; margin-top: 4px; min-width: 20px; text-align: center; }
+/* ===== TOOLS ===== */
+.tools-page{padding:16px}
+.tools-page h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.tools-page .sub{color:var(--t3);font-size:13px;margin-bottom:20px}
+.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 14px;text-align:center;cursor:pointer;transition:all .15s}
+.tool-card:active{transform:scale(.95);border-color:var(--accent)}
+.tool-card .icon{font-size:32px;margin-bottom:8px;display:block}
+.tool-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
+.tool-card p{font-size:11px;color:var(--t3)}
 
-/* ===== EXPLORE PAGE ===== */
-.category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-.category-card { padding: 16px; border-radius: 16px; border: 1px solid var(--border); cursor: pointer; transition: all 0.15s; }
-.category-card:active { transform: scale(0.96); }
-.category-card .icon { font-size: 32px; margin-bottom: 8px; display: block; }
-.category-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-.category-card p { font-size: 11px; color: var(--text3); }
-.recommend-card { display: flex; gap: 14px; padding: 14px; background: var(--card); border-radius: 14px; border: 1px solid var(--border); margin-bottom: 10px; cursor: pointer; transition: all 0.15s; }
-.recommend-card:active { transform: scale(0.98); }
-.recommend-card .thumb { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
-.recommend-card .info { flex: 1; }
-.recommend-card .info h4 { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-.recommend-card .info p { font-size: 12px; color: var(--text3); line-height: 1.5; }
+/* ===== PROFILE ===== */
+.profile-page{padding:20px 16px}
+.profile-header{text-align:center;padding:20px 0}
+.profile-avatar{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--accent),#ff6b35);display:flex;align-items:center;justify-content:center;font-size:36px;color:#000;margin:0 auto 12px;box-shadow:0 4px 20px rgba(247,151,30,.2)}
+.profile-header h2{font-size:20px;font-weight:700}
+.profile-header p{font-size:13px;color:var(--t3);margin-top:4px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border-radius:14px;padding:14px;text-align:center;border:1px solid var(--border)}
+.stat-card .num{font-size:20px;font-weight:700;color:var(--accent)}
+.stat-card .label{font-size:11px;color:var(--t3);margin-top:4px}
+.menu-list{list-style:none;background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.menu-item{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);cursor:pointer}
+.menu-item:last-child{border-bottom:none}
+.menu-item:active{background:var(--card2)}
+.menu-item .mi{font-size:16px;width:22px;text-align:center}
+.menu-item .mn{flex:1;font-size:14px}
+.menu-item .mv{color:var(--t3);font-size:12px}
+.menu-item .ar{color:var(--t3);font-size:16px}
 
-/* ===== PROFILE PAGE ===== */
-.profile-header { text-align: center; padding: 20px 0 14px; }
-.profile-avatar { width: 80px; height: 80px; border-radius: 22px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 36px; color: #000; margin: 0 auto 12px; box-shadow: 0 4px 20px rgba(247,151,30,0.2); }
-.profile-header h2 { font-size: 20px; font-weight: 700; }
-.profile-header p { font-size: 13px; color: var(--text3); margin-top: 4px; }
-.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-.stat-card { background: var(--card); border-radius: 14px; padding: 14px; text-align: center; border: 1px solid var(--border); }
-.stat-card .num { font-size: 20px; font-weight: 700; color: var(--accent); }
-.stat-card .label { font-size: 11px; color: var(--text3); margin-top: 4px; }
-.menu-list { list-style: none; background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
-.menu-item { display: flex; align-items: center; gap: 12px; padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
-.menu-item:last-child { border-bottom: none; }
-.menu-item:active { background: var(--card2); }
-.menu-item .mi { font-size: 18px; width: 24px; text-align: center; }
-.menu-item .mn { flex: 1; font-size: 14px; }
-.menu-item .mv { color: var(--text3); font-size: 12px; }
-.menu-item .ar { color: var(--text3); font-size: 16px; }
-
-/* ===== BOTTOM TABS ===== */
-.bottombar {
-  display: flex; background: rgba(10,10,20,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border); flex-shrink: 0; padding-bottom: var(--safe-bottom);
-  height: var(--tab-height);
-}
-.bottombar .tab {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 2px; cursor: pointer; color: var(--text3); font-size: 10px; transition: color 0.2s;
-  border: none; background: none; position: relative;
-}
-.bottombar .tab .icon { font-size: 22px; transition: transform 0.2s; }
-.bottombar .tab.active { color: var(--accent); }
-.bottombar .tab.active .icon { transform: scale(1.1); }
-.bottombar .tab .badge { position: absolute; top: 2px; background: var(--red); color: #fff; font-size: 10px; border-radius: 8px; padding: 1px 5px; line-height: 1.3; min-width: 16px; text-align: center; }
-
-/* ===== TRANSITIONS ===== */
-.slide-up { animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1); }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in { animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* ===== SCROLLBAR ===== */
-.page::-webkit-scrollbar { width: 0; }
+/* BOTTOM */
+.bottombar{display:flex;background:rgba(10,10,20,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:var(--safe-b);height:var(--tab-h)}
+.bottombar .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--t3);font-size:10px;transition:color .2s;border:none;background:none}
+.bottombar .tab .icon{font-size:22px;transition:transform .2s}
+.bottombar .tab.active{color:var(--accent)}
+.bottombar .tab.active .icon{transform:scale(1.1)}
+/* Hidden scrollbar */
+.page::-webkit-scrollbar{width:0}
 </style>
 </head>
 <body>
-
-<!-- SPLASH -->
 <div class="splash" id="splash">
-  <div class="splash-logo">🎩</div>
-  <h1>SmallHat</h1>
-  <p>你的搞钱工具箱</p>
+  <div class="splash-logo">🤖</div>
+  <h1>SmallHat AI</h1>
+  <p>你的AI搞钱助手</p>
 </div>
 
-<!-- APP -->
-<div class="app-shell" id="app">
-
-<!-- HEADER -->
-<div class="header" id="header">
-  <div class="header-top">
-    <div class="header-avatar">H</div>
-    <div class="header-info">
-      <h1 id="pageTitle">SmallHat</h1>
-      <span id="pageSub">✦ 在线 128 人</span>
-    </div>
-    <div class="header-actions">
-      <button onclick="showSheet('search')">🔍</button>
-      <button onclick="showSheet('add')">➕</button>
-    </div>
-  </div>
-  <div class="search-bar">
-    <span class="icon">🔍</span>
-    <input placeholder="搜索工具、聊天..." id="searchInput">
-  </div>
+<div class="app" id="app">
+<div class="header">
+  <div class="ha">S</div>
+  <div class="hi"><h1 id="pageTitle">SmallHat AI</h1><span id="pageSub">✦ 在线 · Groq AI</span></div>
+  <div class="hb"><button onclick="clearChat()">🗑️</button><button>⚙️</button></div>
 </div>
 
-<!-- PAGES -->
 <div class="pages">
 
-<!-- HOME -->
-<div class="page active" id="pageHome">
-  <div class="page-content slide-up">
-    <div class="banner">
-      <span class="tag">🔥 今日推荐</span>
-      <h2>黄金信号已更新</h2>
-      <p>XAUUSD 短线看多，点击查看策略</p>
+<!-- AI聊天页 -->
+<div class="page active" id="pageChat">
+  <div class="ai-chat">
+    <div class="ai-msgs" id="aiMessages">
+      <div class="ai-welcome">
+        <div class="icon">🤖</div>
+        <h2>SmallHat AI 助手</h2>
+        <p>我是你的 AI 搞钱助手！<br>可以帮你分析行情、解答问题、提供策略。<br><br>🚀 接入了 Groq 免费 AI 模型<br>💬 完全免费，随便问</p>
+        <div class="tips">
+          <span onclick="quickAsk('黄金现在能买吗')">💰 黄金分析</span>
+          <span onclick="quickAsk('BTC 行情怎么样')">₿ BTC行情</span>
+          <span onclick="quickAsk('怎么通过AI赚钱')">🤖 AI搞钱</span>
+          <span onclick="quickAsk('推荐一个交易策略')">📊 交易策略</span>
+        </div>
+      </div>
     </div>
-    <div class="section-title"><h3>⚡ 快捷工具</h3><a href="#" onclick="switchTab(2)">查看全部 →</a></div>
-    <div class="featured-grid" id="featuredGrid"></div>
-    <div class="section-title"><h3>📢 最新消息</h3></div>
-    <div class="tool-list" id="newsList"></div>
+    <div class="ai-input">
+      <input id="aiInput" placeholder="问AI助手..." onkeydown="if(event.key==='Enter')sendMsg()">
+      <button onclick="sendMsg()">➤</button>
+    </div>
   </div>
 </div>
 
-<!-- CHAT -->
-<div class="page" id="pageChat">
-  <div class="page-content">
-    <div class="quick-actions" id="quickActions"></div>
-    <ul class="chat-list" id="chatList"></ul>
+<!-- 工具页 -->
+<div class="page" id="pageTools">
+  <div class="tools-page">
+    <h2>🧰 搞钱工具箱</h2>
+    <div class="sub">让AI帮你赚钱</div>
+    <div class="tools-grid" id="toolsGrid"></div>
   </div>
 </div>
 
-<!-- EXPLORE -->
-<div class="page" id="pageExplore">
-  <div class="page-content">
-    <div class="section-title"><h3>📂 全部工具</h3></div>
-    <div class="category-grid" id="categoryGrid"></div>
-    <div class="section-title"><h3>💡 推荐</h3></div>
-    <div id="recommendList"></div>
-  </div>
-</div>
-
-<!-- PROFILE -->
+<!-- 个人页 -->
 <div class="page" id="pageProfile">
-  <div class="page-content">
+  <div class="profile-page">
     <div class="profile-header">
       <div class="profile-avatar">H</div>
       <h2>huangmin7743</h2>
-      <p>@huangmin7743 · ID: 6494763119</p>
+      <p>@huangmin7743</p>
     </div>
     <div class="profile-stats">
+      <div class="stat-card"><div class="num">∞</div><div class="label">AI次数</div></div>
       <div class="stat-card"><div class="num">6</div><div class="label">工具</div></div>
-      <div class="stat-card"><div class="num">7</div><div class="label">频道</div></div>
-      <div class="stat-card"><div class="num">128</div><div class="label">在线</div></div>
+      <div class="stat-card"><div class="num">Groq</div><div class="label">AI模型</div></div>
     </div>
     <ul class="menu-list" id="menuList"></ul>
   </div>
 </div>
 </div>
 
-<!-- BOTTOM BAR -->
 <div class="bottombar">
-  <button class="tab active" onclick="switchTab(0)"><span class="icon">🏠</span>首页</button>
-  <button class="tab" onclick="switchTab(1)"><span class="icon" style="position:relative">💬<span class="badge" id="chatBadge">3</span></span>消息</button>
-  <button class="tab" onclick="switchTab(2)"><span class="icon">🧰</span>发现</button>
-  <button class="tab" onclick="switchTab(3)"><span class="icon">👤</span>我的</button>
+  <button class="tab active" onclick="switchTab(0)"><span class="icon">🤖</span>AI</button>
+  <button class="tab" onclick="switchTab(1)"><span class="icon">🧰</span>工具</button>
+  <button class="tab" onclick="switchTab(2)"><span class="icon">👤</span>我的</button>
 </div>
 </div>
 
 <script>
-// ====== DATA ======
-const FEATURED = [
-  { icon:'💰', bg:'#f7971e22', name:'黄金信号', desc:'实时推送', action:'bot' },
-  { icon:'📊', bg:'#4ade8022', name:'订单流', desc:'买卖压力', action:'flow' },
-  { icon:'🎮', bg:'#a855f722', name:'游戏', desc:'50款在线', action:'game' },
-  { icon:'🤖', bg:'#3b82f622', name:'AI中转', desc:'GPT/LLaMA', action:'ai' },
-];
-const NEWS = [
-  { icon:'💰', bg:'linear-gradient(135deg,#f7971e,#e08800)', title:'XAUUSD 信号更新', desc:'黄金短线看多，入场点2345' },
-  { icon:'📊', bg:'linear-gradient(135deg,#4ade80,#22c55e)', title:'BTC 订单流', desc:'买盘堆积2.3x，方向偏多' },
-  { icon:'📈', bg:'linear-gradient(135deg,#3b82f6,#2563eb)', title:'A股量化', desc:'今日推荐宁德时代' },
-];
-const CHATS = [
-  { id:1, name:'黄金信号助手', avatar:'💰', last:'XAUUSD 现价 2345.6', time:'刚刚', unread:3, online:true, color:'#f7971e', msg:[{t:'in',text:'🔥 XAUUSD 信号\n方向：做多\n入场：2342.5\n止损：2330\n止盈：2360',time:'09:30'}] },
-  { id:2, name:'AI 中转站', avatar:'🤖', last:'Groq 免费模型已接入', time:'11:30', unread:0, online:true, color:'#3b82f6', msg:[{t:'in',text:'🤖 AI中转站已上线！\nGPT-4o / Llama 3.1 免费使用',time:'11:30'}] },
-  { id:3, name:'订单流监控', avatar:'📊', last:'BTC买盘堆积2.3x', time:'10:15', unread:1, online:true, color:'#4ade80', msg:[{t:'in',text:'📊 BTC订单流\n买盘：287.5 BTC\n卖盘：124.3 BTC\n买卖比：2.31x 🟢',time:'10:15'}] },
-  { id:4, name:'星光AI助手', avatar:'✦', last:'有什么可以帮你？', time:'昨天', unread:0, online:true, color:'#f59e0b', msg:[{t:'in',text:'✨ 我是星光AI助手\n可以帮你分析行情、解释策略',time:'昨天'}] },
-  { id:5, name:'A股量化引擎', avatar:'📈', last:'今日推荐宁德时代', time:'09:00', unread:0, online:true, color:'#ef4444', msg:[{t:'in',text:'📈 AI选股\n宁德时代(300750) 目标280',time:'09:00'}] },
-  { id:6, name:'搬砖监控', avatar:'🪙', last:'OKX/Binance价差0.12%', time:'08:30', unread:0, online:false, color:'#facc15', msg:[{t:'in',text:'🪙 BTC价差0.12%',time:'08:30'}] },
-  { id:7, name:'GameStation', avatar:'🎮', last:'50款游戏在线', time:'昨天', unread:0, online:false, color:'#a855f7', msg:[{t:'in',text:'🎮 GameStation 已上线',time:'昨天'}] },
-];
-const CATEGORIES = [
-  { icon:'💰', name:'交易工具', desc:'信号/订单流/量化', color:'#f7971e' },
-  { icon:'🤖', name:'AI服务', desc:'GPT-4o/Llama/Groq', color:'#3b82f6' },
-  { icon:'🎮', name:'娱乐', desc:'游戏/社区', color:'#a855f7' },
-  { icon:'📊', name:'数据分析', desc:'行情/指标', color:'#4ade80' },
-  { icon:'📈', name:'A股', desc:'AI选股/策略', color:'#ef4444' },
-  { icon:'🪙', name:'套利', desc:'搬砖/价差监控', color:'#facc15' },
-];
-const RECOMMENDS = [
-  { thumb:'💰', bg:'#f7971e22', title:'零成本AI中转站', desc:'接入 Groq 免费API，转手卖给别人赚钱' },
-  { thumb:'📊', bg:'#4ade8022', title:'订单流交易策略', desc:'跟着机构买卖，胜率提升60%' },
-  { thumb:'🎮', bg:'#a855f722', title:'GameStation', desc:'50款小游戏，挂广告赚美金' },
-];
-const MENUS = [
-  { icon:'🔑', name:'API 密钥', val:'已配置' },
-  { icon:'💰', name:'收益统计', val:'¥0.00' },
-  { icon:'📊', name:'使用数据', val:'今日0次' },
-  { icon:'🔔', name:'通知', val:'已开启' },
-  { icon:'🌙', name:'深色模式', val:'已开启' },
-  { icon:'📦', name:'项目备份', val:'MyProjects/' },
-  { icon:'⚙️', name:'设置', val:'' },
-];
+// 🔑 Groq API
+// 从 localStorage 读取 API Key (在设置页面配置)
+let GROQ_KEY = localStorage.getItem('groq_key') || '';
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'llama-3.3-70b-versatile';
 
-// ====== RENDER ======
-function renderFeatured() {
-  document.getElementById('featuredGrid').innerHTML = FEATURED.map(f =>
-    `<div class="featured-item" onclick="toolAction('${f.action}')">
-      <div class="icon" style="background:${f.bg}">${f.icon}</div>
-      <span>${f.name}</span>
-    </div>`
-  ).join('');
-  document.getElementById('newsList').innerHTML = NEWS.map(n =>
-    `<div class="tool-row">
-      <div class="icon" style="background:${n.bg}">${n.icon}</div>
-      <div class="info"><h4>${n.title}</h4><p>${n.desc}</p></div>
-      <span class="arrow">›</span>
-    </div>`
-  ).join('');
+let messages = [{
+  role: 'system',
+  content: '你是一个专业搞钱AI助手，名叫SmallHat。你擅长：1.分析黄金外汇BTC行情 2.提供交易策略 3.推荐赚钱项目 4.回答投资问题。回复简洁专业，用中文。可以给出具体的价格分析、策略建议。'
+}];
+let isLoading = false;
+
+function addMsg(role, text) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  div.innerHTML = text.replace(/\n/g, '<br>') + '<span class="mt">' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) + '</span>';
+  document.getElementById('aiMessages').appendChild(div);
+  const container = document.getElementById('aiMessages');
+  container.scrollTop = container.scrollHeight;
+  // Hide welcome after first message
+  const welcome = container.querySelector('.ai-welcome');
+  if (welcome) welcome.style.display = 'none';
 }
 
-function renderChats() {
-  document.getElementById('quickActions').innerHTML = ['💰黄金信号','🤖AI','📊订单流','✦助手'].map(s =>
-    `<div class="qa-item"><span class="icon">${s.slice(0,2)}</span><span>${s.slice(2)}</span></div>`
-  ).join('');
-  document.getElementById('chatList').innerHTML = CHATS.map(c =>
-    `<li class="chat-item" onclick="openChat(${c.id})">
-      <div class="ca" style="background:${c.color}22">${c.avatar}<div class="dot ${c.online?'on':'off'}"></div></div>
-      <div class="ci"><h3>${c.name}</h3><p>${c.last}</p></div>
-      <div class="cm"><div class="t">${c.time}</div>${c.unread?`<div class="u">${c.unread}</div>`:''}</div>
-    </li>`
-  ).join('');
+function showLoading() {
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'loadingMsg';
+  div.innerHTML = '<div class="loading"><span></span><span></span><span></span></div>';
+  document.getElementById('aiMessages').appendChild(div);
+  document.getElementById('aiMessages').scrollTop = document.getElementById('aiMessages').scrollHeight;
 }
 
-function renderExplore() {
-  document.getElementById('categoryGrid').innerHTML = CATEGORIES.map(c =>
-    `<div class="category-card" style="background:${c.color}08;border-color:${c.color}22">
-      <span class="icon">${c.icon}</span>
-      <h4>${c.name}</h4>
-      <p>${c.desc}</p>
-    </div>`
-  ).join('');
-  document.getElementById('recommendList').innerHTML = RECOMMENDS.map(r =>
-    `<div class="recommend-card">
-      <div class="thumb" style="background:${r.bg}">${r.thumb}</div>
-      <div class="info"><h4>${r.title}</h4><p>${r.desc}</p></div>
-    </div>`
-  ).join('');
+function hideLoading() {
+  const el = document.getElementById('loadingMsg');
+  if (el) el.remove();
 }
 
+async function sendMsg() {
+  if (isLoading) return;
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  input.value = '';
+  addMsg('user', text);
+  messages.push({ role: 'user', content: text });
+  
+  showLoading();
+  isLoading = true;
+  
+  try {
+    const res = await fetch(GROQ_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
+      body: JSON.stringify({ model: MODEL, messages: messages, temperature: 0.7, max_tokens: 1024 })
+    });
+    
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const reply = data.choices[0].message.content;
+    
+    hideLoading();
+    addMsg('assistant', reply);
+    messages.push({ role: 'assistant', content: reply });
+    
+    // Keep context manageable
+    if (messages.length > 20) {
+      messages = [messages[0], ...messages.slice(-18)];
+    }
+  } catch(e) {
+    hideLoading();
+    addMsg('assistant', '⚠️ 连接失败：' + e.message + '\n\n请检查网络连接');
+  }
+  isLoading = false;
+}
 
+function quickAsk(q) {
+  document.getElementById('aiInput').value = q;
+  sendMsg();
+}
 
-// ====== TAB ======
-let currentTab = 0;
-const TITLES = ['SmallHat','消息','发现','我的'];
-const SUBS = ['✦ 在线 128 人','7个频道','6个分类','个人中心'];
+function clearChat() {
+  if (confirm('清空聊天记录？')) {
+    messages = [{ role: 'system', content: messages[0].content }];
+    document.getElementById('aiMessages').innerHTML = '';
+    document.getElementById('aiMessages').innerHTML = document.querySelector('.ai-welcome').outerHTML;
+  }
+}
 
+// Tab switch
 function switchTab(i) {
-  currentTab = i;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab')[i].classList.add('active');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const pages = ['pageHome','pageChat','pageExplore','pageProfile'];
+  const pages = ['pageChat','pageTools','pageProfile'];
   document.getElementById(pages[i]).classList.add('active');
-  document.getElementById('pageTitle').textContent = TITLES[i];
-  document.getElementById('pageSub').textContent = SUBS[i];
+  document.getElementById('pageTitle').textContent = ['SmallHat AI','工具箱','我的'][i];
+  document.getElementById('pageSub').textContent = ['✦ Groq AI 免费','6个搞钱工具','AI搞钱助手'][i];
 }
 
-// ====== CHAT ======
-function openChat(id) {
-  const c = CHATS.find(x=>x.id===id);
-  if(!c) return;
-  showToast('打开 '+c.name);
-}
+// Render tools
+const TOOLS = [
+  {icon:'💰',name:'黄金信号',desc:'实时分析',bg:'#f7971e22'},
+  {icon:'📊',name:'订单流',desc:'买卖压力',bg:'#4ade8022'},
+  {icon:'🤖',name:'AI中转',desc:'卖API赚钱',bg:'#3b82f622'},
+  {icon:'🎮',name:'游戏',desc:'50款在线',bg:'#a855f722'},
+  {icon:'📈',name:'A股',desc:'AI选股',bg:'#ef444422'},
+  {icon:'🪙',name:'搬砖',desc:'价差套利',bg:'#facc1522'},
+];
+document.getElementById('toolsGrid').innerHTML = TOOLS.map(t =>
+  '<div class="tool-card"><span class="icon">' + t.icon + '</span><h3>' + t.name + '</h3><p>' + t.desc + '</p></div>'
+).join('');
 
-// ====== TOOLS ======
-function toolAction(a) {
-  const m = {bot:'打开黄金信号',flow:'打开订单流',game:'打开GameStation',ai:'打开AI中转'};
-  showToast('⏳ '+ (m[a]||'开发中...'));
-}
+// Render menu
+const MENU = [
+  {icon:'🔑',name:'API Key',val:'点击配置'},
+  {icon:'💰',name:'使用统计',val:'无限免费'},
+  {icon:'🔔',name:'通知',val:'已开启'},
+  {icon:'🌙',name:'深色模式',val:'已开启'},
+  {icon:'📦',name:'项目备份',val:'MyProjects/'},
+  {icon:'ℹ️',name:'关于',val:'v2.0 AI版'},
+];
+document.getElementById('menuList').innerHTML = MENU.map(m =>
+  '<li class="menu-item"><span class="mi">' + m.icon + '</span><span class="mn">' + m.name + '</span><span class="mv">' + m.val + '</span><span class="ar">›</span></li>'
+).join('');
 
-// ====== SHEET ======
-function showSheet(type) {
-  showToast(type==='search'?'🔍 搜索':'➕ 添加');
-}
-
-// ====== TOAST ======
-let toastEl,toastTimer;
-function showToast(msg) {
-  if(!toastEl) {
-    toastEl = document.createElement('div');
-    toastEl.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #333;color:#fff;padding:10px 24px;border-radius:12px;font-size:13px;z-index:99999;display:none;backdrop-filter:blur(20px)';
-    document.body.appendChild(toastEl);
+function configKey() {
+  var key = prompt("输入你的 Groq API Key：", localStorage.getItem("groq_key") || "");
+  if (key) {
+    localStorage.setItem("groq_key", key);
+    GROQ_KEY = key;
+    document.getElementById("keyStatus").textContent = "已配置 ✓";
+    addMsg("assistant", "✅ API Key 已配置成功！现在可以问我任何问题了。");
   }
-  toastEl.textContent = msg;
-  toastEl.style.display = 'block';
-  toastEl.style.animation = 'none';
-  toastEl.offsetHeight;
-  toastEl.style.animation = 'fadeInOut 2s';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>toastEl.style.display='none', 2000);
 }
 
-// ====== STYLE DYNAMIC ======
-const style = document.createElement('style');
-style.textContent = `@keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(10px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1}100%{opacity:0}}`;
-document.head.appendChild(style);
-
-// ====== INIT ======
-setTimeout(()=>{
+// Check if key exists
+if (!GROQ_KEY) {
+  setTimeout(function() {
+    var k = prompt("🔑 首次使用，请输入你的 Groq API Key：");
+    if (k) {
+      localStorage.setItem("groq_key", k);
+      GROQ_KEY = k;
+      document.getElementById("keyStatus").textContent = "已配置 ✓";
+    }
+  }, 2000);
+}
+// Splash
+setTimeout(() => {
   document.getElementById('splash').classList.add('hide');
   document.getElementById('app').style.display = 'flex';
-}, 1500);
-
-function renderProfile() {
-  var menu = document.getElementById("menuList");
-  menu.innerHTML = MENUS.map(function(m) {
-    var val = m.val ? "<span class=\"mv\">" + m.val + "</span>" : "";
-    return "<li class=\"menu-item\"><span class=\"mi\">" + m.icon + "</span><span class=\"mn\">" + m.name + "</span>" + val + "<span class=\"ar\">›</span></li>";
-  }).join("");
-}
-renderFeatured(); renderChats(); renderExplore(); renderProfile();
+}, 1200);
 </script>
 </body>
 </html>
-
