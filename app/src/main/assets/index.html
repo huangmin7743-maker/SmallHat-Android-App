@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a14">
-<title>SmallHat AI</title>
+<title>SmallHat AI 智能体</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Helvetica Neue',sans-serif;background:#0a0a14;color:#f0f0f0;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
-:root{--bg:#0a0a14;--card:#12121e;--card2:#1a1a2e;--border:#1e1e36;--text:#f0f0f0;--t2:#8888aa;--t3:#555577;--accent:#f7971e;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);--tab-h:64px}
+:root{--bg:#0a0a14;--card:#12121e;--card2:#1a1a2e;--border:#1e1e36;--text:#f0f0f0;--t2:#8888aa;--t3:#555577;--accent:#f7971e;--accent2:#ff6b35;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);--tab-h:64px}
 
 /* SPLASH */
 .splash{position:fixed;inset:0;background:var(--bg);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
 .splash.hide{opacity:0;pointer-events:none}
-.splash-logo{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,#f7971e,#ff6b35);display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 8px 40px rgba(247,151,30,0.3);animation:pulse 2s ease-in-out infinite}
+.splash-logo{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:44px;box-shadow:0 8px 40px rgba(247,151,30,0.3);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .splash h1{margin-top:20px;font-size:28px;font-weight:700}
 .splash p{color:var(--t3);font-size:14px;margin-top:6px}
@@ -22,309 +22,408 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro','Helvetica Neue',sans
 .app{display:none;flex-direction:column;height:100vh}
 
 /* HEADER */
-.header{padding-top:var(--safe-t);padding:8px 16px;padding-top:calc(var(--safe-t) + 8px);display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border)}
-.header .ha{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#ff6b35);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#000;flex-shrink:0}
+.header{padding-top:calc(var(--safe-t) + 8px);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.header .ha{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#000;flex-shrink:0}
 .header .hi{flex:1}
 .header .hi h1{font-size:18px;font-weight:700;letter-spacing:-.3px}
 .header .hi span{font-size:11px;color:var(--t3)}
-.header .hb{display:flex;gap:4px}
-.header .hb button{width:36px;height:36px;border:none;background:var(--card);border-radius:10px;color:var(--t2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.header .hb button:active{background:var(--card2)}
 
 /* PAGES */
 .pages{flex:1;overflow:hidden;position:relative}
 .page{position:absolute;inset:0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
 .page.active{display:block}
 
-/* ===== AI CHAT ===== */
-.ai-chat{display:flex;flex-direction:column;height:100%}
-.ai-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
-.ai-welcome{text-align:center;padding:30px 20px}
-.ai-welcome .icon{font-size:48px;margin-bottom:12px}
-.ai-welcome h2{font-size:20px;font-weight:700;margin-bottom:6px;background:linear-gradient(135deg,#f7971e,#ff6b35);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.ai-welcome p{font-size:13px;color:var(--t3);line-height:1.6}
-.ai-welcome .tips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
-.ai-welcome .tips span{padding:6px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border);font-size:12px;color:var(--t2);cursor:pointer}
-.ai-welcome .tips span:active{background:var(--card2)}
-.msg{max-width:88%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.6;word-wrap:break-word;animation:msgIn .3s ease}
-@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.msg.user{align-self:flex-end;background:linear-gradient(135deg,#f7971e,#e08800);border-bottom-right-radius:4px;color:#000}
+/* ===== 智能体列表 ===== */
+.agents-page{padding:12px 16px}
+.agents-page h2{font-size:22px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.agents-page .sub{color:var(--t3);font-size:13px;margin-bottom:16px}
+.agent-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.agent-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px 14px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.agent-card:active{transform:scale(.95)}
+.agent-card .abg{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08}
+.agent-card .av{width:54px;height:54px;border-radius:16px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.agent-card .av .dot{position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg)}
+.agent-card .av .dot.on{background:#4ade80}
+.agent-card h3{font-size:14px;font-weight:600;margin-bottom:2px}
+.agent-card p{font-size:11px;color:var(--t3);line-height:1.4}
+.agent-card .tag{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;color:var(--accent);background:var(--accent)15}
+
+/* ===== 聊天页面 ===== */
+.chat-page{display:none;flex-direction:column;height:100%}
+.chat-page.active{display:flex}
+.chat-top{display:flex;align-items:center;gap:10px;padding:8px 12px;padding-top:calc(var(--safe-t) + 8px);border-bottom:1px solid var(--border);flex-shrink:0}
+.chat-top .back{width:36px;height:36px;border:none;background:var(--card);border-radius:10px;color:var(--t2);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-top .back:active{background:var(--card2)}
+.chat-top .av{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.chat-top .ci{flex:1}
+.chat-top .ci h3{font-size:16px;font-weight:600}
+.chat-top .ci span{font-size:11px;color:var(--t3)}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.msg{padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.6;word-wrap:break-word;animation:fadeIn .3s ease;max-width:88%}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent),var(--accent2));border-bottom-right-radius:4px;color:#000}
 .msg.ai{align-self:flex-start;background:var(--card);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text)}
 .msg .mt{font-size:10px;opacity:.4;margin-top:6px;display:block;text-align:right}
-.msg .loading{display:inline-flex;gap:4px;padding:4px 0}
+.msg .loading{display:flex;gap:4px;padding:4px 0}
 .msg .loading span{width:6px;height:6px;border-radius:50%;background:var(--t3);animation:bounce 1.4s infinite}
 .msg .loading span:nth-child(2){animation-delay:.2s}
 .msg .loading span:nth-child(3){animation-delay:.4s}
 @keyframes bounce{0%,80%,100%{transform:scale(.6)}40%{transform:scale(1)}}
-.ai-input{display:flex;gap:8px;padding:8px 12px;padding-bottom:calc(var(--safe-b) + 8px);background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
-.ai-input input{flex:1;padding:12px 18px;border-radius:24px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;outline:none}
-.ai-input input:focus{border-color:var(--accent)}
-.ai-input button{width:44px;height:44px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),#ff6b35);color:#000;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ai-input button:active{transform:scale(.92)}
+.chat-input{display:flex;gap:8px;padding:8px 12px;padding-bottom:calc(var(--safe-b) + 8px);background:var(--bg);border-top:1px solid var(--border);flex-shrink:0}
+.chat-input input{flex:1;padding:12px 18px;border-radius:24px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;outline:none}
+.chat-input input:focus{border-color:var(--accent)}
+.chat-input button{width:44px;height:44px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-input button:active{transform:scale(.92)}
+.chat-input button:disabled{opacity:.4}
 
-/* ===== TOOLS ===== */
+/* ===== 工具页 ===== */
 .tools-page{padding:16px}
 .tools-page h2{font-size:22px;font-weight:700;margin-bottom:4px}
-.tools-page .sub{color:var(--t3);font-size:13px;margin-bottom:20px}
-.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.tool-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 14px;text-align:center;cursor:pointer;transition:all .15s}
-.tool-card:active{transform:scale(.95);border-color:var(--accent)}
-.tool-card .icon{font-size:32px;margin-bottom:8px;display:block}
-.tool-card h3{font-size:14px;font-weight:600;margin-bottom:4px}
-.tool-card p{font-size:11px;color:var(--t3)}
+.tools-page .sub{color:var(--t3);font-size:13px;margin-bottom:16px}
+.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .15s}
+.tool-card:active{transform:scale(.94)}
+.tool-card .ic{font-size:24px;margin-bottom:6px;display:block}
+.tool-card h4{font-size:13px;font-weight:600;margin-bottom:2px}
+.tool-card p{font-size:10px;color:var(--t3)}
 
-/* ===== PROFILE ===== */
+/* ===== 个人 ===== */
 .profile-page{padding:20px 16px}
-.profile-header{text-align:center;padding:20px 0}
-.profile-avatar{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--accent),#ff6b35);display:flex;align-items:center;justify-content:center;font-size:36px;color:#000;margin:0 auto 12px;box-shadow:0 4px 20px rgba(247,151,30,.2)}
+.profile-header{text-align:center;padding:16px 0}
+.profile-avatar{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:32px;color:#000;margin:0 auto 10px;box-shadow:0 4px 20px rgba(247,151,30,.2)}
 .profile-header h2{font-size:20px;font-weight:700}
-.profile-header p{font-size:13px;color:var(--t3);margin-top:4px}
-.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-.stat-card{background:var(--card);border-radius:14px;padding:14px;text-align:center;border:1px solid var(--border)}
-.stat-card .num{font-size:20px;font-weight:700;color:var(--accent)}
-.stat-card .label{font-size:11px;color:var(--t3);margin-top:4px}
+.profile-header p{font-size:13px;color:var(--t3);margin-top:2px}
 .menu-list{list-style:none;background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
-.menu-item{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);cursor:pointer}
+.menu-item{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--border);cursor:pointer}
 .menu-item:last-child{border-bottom:none}
 .menu-item:active{background:var(--card2)}
-.menu-item .mi{font-size:16px;width:22px;text-align:center}
+.menu-item .mi{font-size:15px;width:20px;text-align:center}
 .menu-item .mn{flex:1;font-size:14px}
 .menu-item .mv{color:var(--t3);font-size:12px}
-.menu-item .ar{color:var(--t3);font-size:16px}
 
 /* BOTTOM */
 .bottombar{display:flex;background:rgba(10,10,20,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:var(--safe-b);height:var(--tab-h)}
 .bottombar .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--t3);font-size:10px;transition:color .2s;border:none;background:none}
-.bottombar .tab .icon{font-size:22px;transition:transform .2s}
+.bottombar .tab .icon{font-size:20px;transition:transform .2s}
 .bottombar .tab.active{color:var(--accent)}
 .bottombar .tab.active .icon{transform:scale(1.1)}
-/* Hidden scrollbar */
 .page::-webkit-scrollbar{width:0}
 </style>
 </head>
 <body>
-<div class="splash" id="splash">
-  <div class="splash-logo">🤖</div>
-  <h1>SmallHat AI</h1>
-  <p>你的AI搞钱助手</p>
-</div>
+<div class="splash" id="splash"><div class="splash-logo">🧠</div><h1>SmallHat</h1><p>AI 智能体 · 搞钱助手</p></div>
 
 <div class="app" id="app">
+
+<!-- Header -->
 <div class="header">
   <div class="ha">S</div>
-  <div class="hi"><h1 id="pageTitle">SmallHat AI</h1><span id="pageSub">✦ 在线 · Groq AI</span></div>
-  <div class="hb"><button onclick="clearChat()">🗑️</button><button>⚙️</button></div>
+  <div class="hi"><h1 id="pageTitle">智能体</h1><span id="pageSub">✦ 7个AI智能体</span></div>
 </div>
 
 <div class="pages">
 
-<!-- AI聊天页 -->
-<div class="page active" id="pageChat">
-  <div class="ai-chat">
-    <div class="ai-msgs" id="aiMessages">
-      <div class="ai-welcome">
-        <div class="icon">🤖</div>
-        <h2>SmallHat AI 助手</h2>
-        <p>我是你的 AI 搞钱助手！<br>可以帮你分析行情、解答问题、提供策略。<br><br>🚀 接入了 Groq 免费 AI 模型<br>💬 完全免费，随便问</p>
-        <div class="tips">
-          <span onclick="quickAsk('黄金现在能买吗')">💰 黄金分析</span>
-          <span onclick="quickAsk('BTC 行情怎么样')">₿ BTC行情</span>
-          <span onclick="quickAsk('怎么通过AI赚钱')">🤖 AI搞钱</span>
-          <span onclick="quickAsk('推荐一个交易策略')">📊 交易策略</span>
-        </div>
-      </div>
-    </div>
-    <div class="ai-input">
-      <input id="aiInput" placeholder="问AI助手..." onkeydown="if(event.key==='Enter')sendMsg()">
-      <button onclick="sendMsg()">➤</button>
-    </div>
+<!-- ===== 智能体列表 ===== -->
+<div class="page active" id="pageAgents">
+  <div class="agents-page">
+    <h2>🧠 AI 智能体</h2>
+    <div class="sub">每个AI都有不同专长，选择你需要的</div>
+    <div class="agent-grid" id="agentGrid"></div>
   </div>
 </div>
 
-<!-- 工具页 -->
+<!-- ===== 聊天 ===== -->
+<div class="chat-page" id="chatPage">
+  <div class="chat-top">
+    <button class="back" onclick="closeChat()">‹</button>
+    <div class="av" id="chatAv">💰</div>
+    <div class="ci"><h3 id="chatName">分析师</h3><span id="chatStatus">在线 · 输入你的问题</span></div>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg ai" id="welcomeMsg" style="max-width:100%;background:none;border:none;text-align:center;padding:20px">
+      <div style="font-size:40px;margin-bottom:10px">👋</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:4px">你好！我是你的AI智能体</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.6" id="welcomeText">请输入你的 Groq API Key 开始对话</div>
+    </div>
+  </div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="问AI..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button id="sendBtn" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<!-- ===== 工具 ===== -->
 <div class="page" id="pageTools">
   <div class="tools-page">
-    <h2>🧰 搞钱工具箱</h2>
-    <div class="sub">让AI帮你赚钱</div>
+    <h2>🧰 工具箱</h2>
+    <div class="sub">AI 智能体 + 搞钱工具</div>
     <div class="tools-grid" id="toolsGrid"></div>
   </div>
 </div>
 
-<!-- 个人页 -->
+<!-- ===== 个人 ===== -->
 <div class="page" id="pageProfile">
   <div class="profile-page">
     <div class="profile-header">
       <div class="profile-avatar">H</div>
       <h2>huangmin7743</h2>
-      <p>@huangmin7743</p>
-    </div>
-    <div class="profile-stats">
-      <div class="stat-card"><div class="num">∞</div><div class="label">AI次数</div></div>
-      <div class="stat-card"><div class="num">6</div><div class="label">工具</div></div>
-      <div class="stat-card"><div class="num">Groq</div><div class="label">AI模型</div></div>
+      <p>已接入 Groq AI · 免费无限使用</p>
     </div>
     <ul class="menu-list" id="menuList"></ul>
   </div>
 </div>
 </div>
 
+<!-- Bottom -->
 <div class="bottombar">
-  <button class="tab active" onclick="switchTab(0)"><span class="icon">🤖</span>AI</button>
+  <button class="tab active" onclick="switchTab(0)"><span class="icon">🧠</span>智能体</button>
   <button class="tab" onclick="switchTab(1)"><span class="icon">🧰</span>工具</button>
   <button class="tab" onclick="switchTab(2)"><span class="icon">👤</span>我的</button>
 </div>
 </div>
 
 <script>
-// 🔑 Groq API
-// 从 localStorage 读取 API Key (在设置页面配置)
-let GROQ_KEY = localStorage.getItem('groq_key') || '';
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.3-70b-versatile';
+// ====== 智能体数据 ======
+const AGENTS = [
+  {
+    id:'gold', name:'💰 黄金分析师', desc:'10年交易经验，擅长黄金外汇技术分析',
+    color:'#f7971e', bg:'linear-gradient(135deg,#f7971e22,#e0880022)',
+    prompt:'你是一个专业黄金外汇分析师，有10年交易经验。擅长技术分析、K线形态、支撑阻力判断。回答简洁专业，给出具体价格分析和策略建议。用中文回复。'
+  },
+  {
+    id:'btc', name:'₿ BTC 策略师', desc:'加密货币量化交易专家，订单流分析',
+    color:'#f7931a', bg:'linear-gradient(135deg,#f7931a22,#e67e2222)',
+    prompt:'你是加密货币交易策略专家，擅长BTC/ETH技术分析和订单流解读。关注买卖压力、资金费率、持仓量等指标。给出具体的入场、止损、止盈建议。'
+  },
+  {
+    id:'money', name:'💵 搞钱导师', desc:'专注搞钱项目、副业、套利机会',
+    color:'#4ade80', bg:'linear-gradient(135deg,#4ade8022,#22c55e22)',
+    prompt:'你是搞钱导师，擅长发现和评估各种赚钱项目。包括：副业、套利、搬砖、AI变现、自媒体等。给出具体可执行的操作步骤，分析投入产出比。'
+  },
+  {
+    id:'stock', name:'📈 A股军师', desc:'A股趋势交易，AI量化选股',
+    color:'#ef4444', bg:'linear-gradient(135deg,#ef444422,#dc262622)',
+    prompt:'你是A股投资顾问，擅长趋势交易和基本面分析。用AI量化模型辅助决策。分析个股时给出具体逻辑、目标价位和风险提示。'
+  },
+  {
+    id:'ai', name:'🤖 AI 极客', desc:'AI技术、API中转、变现方案',
+    color:'#3b82f6', bg:'linear-gradient(135deg,#3b82f622,#2563eb22)',
+    prompt:'你是AI技术专家，精通各种AI模型API（GPT、Claude、Groq等）、AI应用开发、AI变现方案。给出实用的技术方案和赚钱思路。'
+  },
+  {
+    id:'game', name:'🎮 GameStation', desc:'游戏工作室，广告变现流量玩法',
+    color:'#a855f7', bg:'linear-gradient(135deg,#a855f722,#9333ea22)',
+    prompt:'你是游戏创业顾问，擅长小游戏开发、网站运营、广告变现（AdSense等）、SEO流量获取。分享实战经验和数据。'
+  },
+  {
+    id:'code', name:'⚡ 编程助手', desc:'帮助写代码、部署项目、解决问题',
+    color:'#06b6d4', bg:'linear-gradient(135deg,#06b6d422,#0891b222)',
+    prompt:'你是资深全栈程序员，擅长Python、JavaScript、React Native、Android开发。帮助写代码、Debug、部署项目。给出完整的代码示例。'
+  },
+];
 
-let messages = [{
-  role: 'system',
-  content: '你是一个专业搞钱AI助手，名叫SmallHat。你擅长：1.分析黄金外汇BTC行情 2.提供交易策略 3.推荐赚钱项目 4.回答投资问题。回复简洁专业，用中文。可以给出具体的价格分析、策略建议。'
-}];
+const TOOLS_LIST = [
+  {ic:'💰',name:'黄金信号',desc:'实时推送'},
+  {ic:'📊',name:'订单流',desc:'买卖压力'},
+  {ic:'🤖',name:'AI中转',desc:'卖API'},
+  {ic:'🎮',name:'游戏',desc:'50款'},
+  {ic:'📈',name:'A股',desc:'AI选股'},
+  {ic:'🪙',name:'搬砖',desc:'套利'},
+];
+
+const MENU_ITEMS = [
+  {ic:'🔑',name:'API Key',val:'点击配置'},
+  {ic:'💬',name:'对话次数',val:'无限免费'},
+  {ic:'🌙',name:'深色模式',val:'已开启'},
+  {ic:'📦',name:'项目备份',val:'MyProjects/'},
+  {ic:'ℹ️',name:'关于',val:'v3.0 智能体'},
+];
+
+// ====== 状态 ======
+let currentAgent = null;
 let isLoading = false;
+let GROQ_KEY = localStorage.getItem('groq_key') || '';
 
-function addMsg(role, text) {
-  const div = document.createElement('div');
-  div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
-  div.innerHTML = text.replace(/\n/g, '<br>') + '<span class="mt">' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) + '</span>';
-  document.getElementById('aiMessages').appendChild(div);
-  const container = document.getElementById('aiMessages');
-  container.scrollTop = container.scrollHeight;
-  // Hide welcome after first message
-  const welcome = container.querySelector('.ai-welcome');
-  if (welcome) welcome.style.display = 'none';
+// ====== 渲染 ======
+function renderAgents() {
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = AGENTS.map(a =>
+    '<div class="agent-card" onclick="startChat(\'' + a.id + '\')" style="border-color:' + a.color + '22">' +
+      '<div class="abg" style="background:' + a.color + ';opacity:.06"></div>' +
+      '<div class="av" style="background:' + a.color + '22">' +
+        a.name.split(' ')[0] +
+        '<div class="dot on"></div>' +
+      '</div>' +
+      '<h3>' + a.name.split(' ').slice(1).join(' ') + '</h3>' +
+      '<p>' + a.desc + '</p>' +
+      '<div class="tag">' + a.name.split(' ')[0] + '</div>' +
+    '</div>'
+  ).join('');
 }
 
-function showLoading() {
-  const div = document.createElement('div');
-  div.className = 'msg ai';
-  div.id = 'loadingMsg';
-  div.innerHTML = '<div class="loading"><span></span><span></span><span></span></div>';
-  document.getElementById('aiMessages').appendChild(div);
-  document.getElementById('aiMessages').scrollTop = document.getElementById('aiMessages').scrollHeight;
+function renderTools() {
+  document.getElementById('toolsGrid').innerHTML = TOOLS_LIST.map(t =>
+    '<div class="tool-card"><span class="ic">' + t.ic + '</span><h4>' + t.name + '</h4><p>' + t.desc + '</p></div>'
+  ).join('');
 }
 
-function hideLoading() {
-  const el = document.getElementById('loadingMsg');
-  if (el) el.remove();
+function renderMenu() {
+  document.getElementById('menuList').innerHTML = MENU_ITEMS.map(m =>
+    '<li class="menu-item" onclick="' + (m.ic === '🔑' ? 'configKey()' : '') + '">' +
+      '<span class="mi">' + m.ic + '</span>' +
+      '<span class="mn">' + m.name + '</span>' +
+      '<span class="mv" id="keyStatus2">' + m.val + '</span>' +
+    '</li>'
+  ).join('');
+  if (GROQ_KEY) document.getElementById('keyStatus2').textContent = '已配置 ✓';
 }
 
-async function sendMsg() {
+// ====== 聊天 ======
+function startChat(id) {
+  currentAgent = AGENTS.find(a => a.id === id);
+  if (!currentAgent) return;
+  
+  document.getElementById('chatAv').textContent = currentAgent.name.split(' ')[0];
+  document.getElementById('chatAv').style.background = currentAgent.color + '22';
+  document.getElementById('chatName').textContent = currentAgent.name.split(' ').slice(1).join(' ');
+  document.getElementById('chatStatus').textContent = '在线 · 专长：' + currentAgent.desc;
+  
+  document.getElementById('welcomeText').textContent = GROQ_KEY
+    ? '你好！我是「' + currentAgent.name.split(' ').slice(1).join(' ') + '」\n有什么可以帮你？'
+    : '👆 先点「我的」配置 Groq API Key 才能开始聊天';
+  
+  document.getElementById('chatMsgs').innerHTML = document.getElementById('welcomeMsg').outerHTML;
+  
+  document.getElementById('chatPage').classList.add('active');
+}
+
+function closeChat() {
+  document.getElementById('chatPage').classList.remove('active');
+}
+
+function sendMsg() {
   if (isLoading) return;
-  const input = document.getElementById('aiInput');
+  const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
   
+  if (!GROQ_KEY) {
+    showToast('⚠️ 请先在「我的」页面配置 API Key');
+    return;
+  }
+  
   input.value = '';
   addMsg('user', text);
-  messages.push({ role: 'user', content: text });
   
-  showLoading();
+  // Loading
   isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  const loadDiv = document.createElement('div');
+  loadDiv.className = 'msg ai';
+  loadDiv.id = 'loadingDot';
+  loadDiv.innerHTML = '<div class="loading"><span></span><span></span><span></span></div>';
+  document.getElementById('chatMsgs').appendChild(loadDiv);
+  document.getElementById('chatMsgs').scrollTop = document.getElementById('chatMsgs').scrollHeight;
   
-  try {
-    const res = await fetch(GROQ_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
-      body: JSON.stringify({ model: MODEL, messages: messages, temperature: 0.7, max_tokens: 1024 })
-    });
-    
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
+  // Remove welcome
+  const welcome = document.getElementById('welcomeMsg');
+  if (welcome) welcome.remove();
+  
+  const messages = [
+    { role: 'system', content: currentAgent ? currentAgent.prompt : '你是一个AI助手' },
+    { role: 'user', content: text }
+  ];
+  
+  fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
+    body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: messages, temperature: 0.7, max_tokens: 1024 })
+  })
+  .then(r => {
+    if (!r.ok) throw new Error(r.status === 401 ? 'API Key 无效，请检查' : 'HTTP ' + r.status);
+    return r.json();
+  })
+  .then(data => {
     const reply = data.choices[0].message.content;
-    
-    hideLoading();
+    document.getElementById('loadingDot')?.remove();
     addMsg('assistant', reply);
-    messages.push({ role: 'assistant', content: reply });
-    
-    // Keep context manageable
-    if (messages.length > 20) {
-      messages = [messages[0], ...messages.slice(-18)];
-    }
-  } catch(e) {
-    hideLoading();
-    addMsg('assistant', '⚠️ 连接失败：' + e.message + '\n\n请检查网络连接');
+  })
+  .catch(e => {
+    document.getElementById('loadingDot')?.remove();
+    addMsg('assistant', '⚠️ ' + e.message);
+  })
+  .finally(() => {
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+  });
+}
+
+function addMsg(role, text) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = text.replace(/\n/g, '<br>') + '<span class="mt">' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) + '</span>';
+  document.getElementById('chatMsgs').appendChild(div);
+  document.getElementById('chatMsgs').scrollTop = document.getElementById('chatMsgs').scrollHeight;
+}
+
+// ====== API Key ======
+function configKey() {
+  const key = prompt('输入 Groq API Key：', GROQ_KEY || '');
+  if (key) {
+    GROQ_KEY = key;
+    localStorage.setItem('groq_key', key);
+    document.getElementById('keyStatus2').textContent = '已配置 ✓';
+    showToast('✅ API Key 已配置');
   }
-  isLoading = false;
 }
 
-function quickAsk(q) {
-  document.getElementById('aiInput').value = q;
-  sendMsg();
-}
-
-function clearChat() {
-  if (confirm('清空聊天记录？')) {
-    messages = [{ role: 'system', content: messages[0].content }];
-    document.getElementById('aiMessages').innerHTML = '';
-    document.getElementById('aiMessages').innerHTML = document.querySelector('.ai-welcome').outerHTML;
-  }
-}
-
-// Tab switch
+// ====== Tab ======
 function switchTab(i) {
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab')[i].classList.add('active');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const pages = ['pageChat','pageTools','pageProfile'];
+  const pages = ['pageAgents','pageTools','pageProfile'];
   document.getElementById(pages[i]).classList.add('active');
-  document.getElementById('pageTitle').textContent = ['SmallHat AI','工具箱','我的'][i];
-  document.getElementById('pageSub').textContent = ['✦ Groq AI 免费','6个搞钱工具','AI搞钱助手'][i];
+  
+  const titles = ['智能体','工具箱','我的'];
+  const subs = ['7个AI智能体','6个搞钱工具','已接入 Groq AI'];
+  document.getElementById('pageTitle').textContent = titles[i];
+  document.getElementById('pageSub').textContent = subs[i];
+  closeChat();
 }
 
-// Render tools
-const TOOLS = [
-  {icon:'💰',name:'黄金信号',desc:'实时分析',bg:'#f7971e22'},
-  {icon:'📊',name:'订单流',desc:'买卖压力',bg:'#4ade8022'},
-  {icon:'🤖',name:'AI中转',desc:'卖API赚钱',bg:'#3b82f622'},
-  {icon:'🎮',name:'游戏',desc:'50款在线',bg:'#a855f722'},
-  {icon:'📈',name:'A股',desc:'AI选股',bg:'#ef444422'},
-  {icon:'🪙',name:'搬砖',desc:'价差套利',bg:'#facc1522'},
-];
-document.getElementById('toolsGrid').innerHTML = TOOLS.map(t =>
-  '<div class="tool-card"><span class="icon">' + t.icon + '</span><h3>' + t.name + '</h3><p>' + t.desc + '</p></div>'
-).join('');
-
-// Render menu
-const MENU = [
-  {icon:'🔑',name:'API Key',val:'点击配置'},
-  {icon:'💰',name:'使用统计',val:'无限免费'},
-  {icon:'🔔',name:'通知',val:'已开启'},
-  {icon:'🌙',name:'深色模式',val:'已开启'},
-  {icon:'📦',name:'项目备份',val:'MyProjects/'},
-  {icon:'ℹ️',name:'关于',val:'v2.0 AI版'},
-];
-document.getElementById('menuList').innerHTML = MENU.map(m =>
-  '<li class="menu-item"><span class="mi">' + m.icon + '</span><span class="mn">' + m.name + '</span><span class="mv">' + m.val + '</span><span class="ar">›</span></li>'
-).join('');
-
-function configKey() {
-  var key = prompt("输入你的 Groq API Key：", localStorage.getItem("groq_key") || "");
-  if (key) {
-    localStorage.setItem("groq_key", key);
-    GROQ_KEY = key;
-    document.getElementById("keyStatus").textContent = "已配置 ✓";
-    addMsg("assistant", "✅ API Key 已配置成功！现在可以问我任何问题了。");
+// ====== Toast ======
+let toastEl;
+function showToast(msg) {
+  if(!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #333;color:#fff;padding:10px 24px;border-radius:12px;font-size:13px;z-index:99999;display:none';
+    document.body.appendChild(toastEl);
+    const style = document.createElement('style');
+    style.textContent = '@keyframes tf{0%{opacity:0;transform:translateX(-50%) translateY(10px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1}100%{opacity:0}}';
+    document.head.appendChild(style);
   }
+  toastEl.textContent = msg;
+  toastEl.style.display = 'block';
+  toastEl.style.animation = 'tf 2s';
+  setTimeout(() => toastEl.style.display = 'none', 2000);
 }
 
-// Check if key exists
+// ====== Key提示 ======
 if (!GROQ_KEY) {
-  setTimeout(function() {
-    var k = prompt("🔑 首次使用，请输入你的 Groq API Key：");
-    if (k) {
-      localStorage.setItem("groq_key", k);
-      GROQ_KEY = k;
-      document.getElementById("keyStatus").textContent = "已配置 ✓";
+  setTimeout(() => {
+    const key = prompt('🔑 首次使用，请输入 Groq API Key：');
+    if (key) {
+      GROQ_KEY = key;
+      localStorage.setItem('groq_key', key);
+      document.getElementById('keyStatus2').textContent = '已配置 ✓';
     }
-  }, 2000);
+  }, 1500);
 }
-// Splash
+
+// ====== Init ======
+renderAgents(); renderTools(); renderMenu();
+
 setTimeout(() => {
   document.getElementById('splash').classList.add('hide');
   document.getElementById('app').style.display = 'flex';
